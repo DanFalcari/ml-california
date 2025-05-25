@@ -1,4 +1,4 @@
-# Bibliotecas principais
+# Bibliotecas 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
@@ -10,7 +10,7 @@ from joblib import load
 # Caminhos para os dados e modelo
 from notebooks.src.config import DADOS_GEO_MEDIAN, DADOS_LIMPOS, MODELO_FINAL
 
-# Função para carregar dados tabulares já tratados
+# Função para carregar dados já tratados
 @st.cache_data
 def carregar_dados_limpos():
     return pd.read_parquet(DADOS_LIMPOS)

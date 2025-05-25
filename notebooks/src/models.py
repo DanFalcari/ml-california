@@ -7,9 +7,29 @@ from sklearn.pipeline import Pipeline
 RANDOM_STATE = 42
 
 
-def construir_pipeline_modelo_regressao(
-    regressor, preprocessor=None, target_transformer=None
-):
+def construir_pipeline_modelo_regressao(regressor, preprocessor=None, target_transformer=None):
+   """
+    Constrói um pipeline completo para modelagem de regressão, com opções de pré-processamento
+    e transformação do target.
+
+    Parameters
+    ----------
+    regressor : sklearn estimator
+        Modelo de regressão a ser utilizado (ex: LinearRegression).
+        
+    preprocessor : sklearn transformer, optional
+        Pipeline de pré-processamento para as features (ex: ColumnTransformer).
+        Se None, nenhum pré-processamento é aplicado.
+        
+    target_transformer : sklearn transformer, optional
+        Transformador para a variável target (ex: PowerTransformer).
+        Se None, o target não é transformado.
+
+    Returns
+    -------
+    sklearn.pipeline.Pipeline ou sklearn.compose.TransformedTargetRegressor
+        Pipeline completo pronto para treinamento.
+    """      
     if preprocessor is not None:
         pipeline = Pipeline([("preprocessor", preprocessor), ("reg", regressor)])
     else:
@@ -33,7 +53,42 @@ def treinar_e_validar_modelo_regressao(
     n_splits=5,
     random_state=RANDOM_STATE,
 ):
+    """
+    Executa validação cruzada para um modelo de regressão, retornando métricas de avaliação.
 
+    Parameters
+    ----------
+    X : array-like ou DataFrame de shape (n_samples, n_features)
+        Dados de entrada.
+        
+    y : array-like de shape (n_samples,)
+        Valores target.
+        
+    regressor : sklearn estimator
+        Modelo de regressão a ser avaliado.
+        
+    preprocessor : sklearn transformer, optional
+        Pipeline de pré-processamento para as features.
+        
+    target_transformer : sklearn transformer, optional
+        Transformador para a variável target.
+        
+    n_splits : int, default=5
+        Número de folds para validação cruzada.
+        
+    random_state : int, default=RANDOM_STATE
+        Seed para reprodutibilidade do KFold.
+
+    Returns
+    -------
+    dict
+        Dicionário com arrays contendo:
+        - fit_time: Tempos de treino para cada fold
+        - score_time: Tempos de predição para cada fold
+        - test_r2: R² scores para cada fold
+        - test_neg_mean_absolute_error: MAE scores para cada fold
+        - test_neg_root_mean_squared_error: RMSE scores para cada fold
+    """    
     model = construir_pipeline_modelo_regressao(
         regressor, preprocessor, target_transformer
     )
